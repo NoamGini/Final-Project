@@ -69,6 +69,38 @@ def get_all_data_from_collection_hauzot():
     # Return data as a list
     return list_data
 
+
+def add_user_to_db(user):
+    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
+    db = client['parking_spot']  # replace with your database name
+    collection = db['users']  # replace with your collection name
+    collection.insert_one(user)
+    # Close MongoDB client
+    client.close()
+
+
+def user_exist_db(user):
+    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
+    db = client['parking_spot']  # replace with your database name
+    collection = db['users']
+    result = collection.find({'name': user['name'], 'email': user['email']})
+    print(f"the result: {result}")
+    for i in result:
+        print(i)
+        if i is not None:
+            return True
+    return False
+
+def user_exist_by_email_password(email, password):
+    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
+    db = client['parking_spot']  # replace with your database name
+    collection = db['users']
+    result = collection.find({'email': email, 'password': password})
+    for i in result:
+        print(i)
+        if i is not None:
+            return True
+    return False
 #
 # def update_all_documents(collection_name, update_query):
 #     """

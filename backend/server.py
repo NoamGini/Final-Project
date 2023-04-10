@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from getDataFromAPI import *
 from getDataFromURL import *
 import json
@@ -40,18 +40,18 @@ def get_closest_parking_by_address_from_client(address):
     ten_parking_lots = response[:10]
     for parking in ten_parking_lots:
         if "AhuzotCode" in parking[0]:
-            #update status in hauzot-ahof parking
+            # update status in hauzot-ahof parking
             print("enter to update hauzot")
-            updated_parking_hauzot = update_status(parking[0],parking[0]['AhuzotCode'])
-            parking[0]['InformationToShow']=updated_parking_hauzot['InformationToShow']
-            #update the db
+            updated_parking_hauzot = update_status(parking[0], parking[0]['AhuzotCode'])
+            parking[0]['InformationToShow'] = updated_parking_hauzot['InformationToShow']
+            # update the db
             filter_query = {'Name': parking[0]['Name']}
             update_query = {'$set': {'InformationToShow': updated_parking_hauzot['InformationToShow']}}
             update_document("hauzot_ahof", filter_query, update_query)
             print("finish update db hauzot")
         else:
             print("enter to update central")
-            updated_parking_central =update_parking_lot_status(parking)
+            updated_parking_central = update_parking_lot_status(parking)
             parking[0]['InformationToShow'] = updated_parking_central[0]['InformationToShow']
             filter_query = {'Name': updated_parking_central[0]['Name']}
             update_query = {'$set': {'InformationToShow': updated_parking_central[0]['InformationToShow']}}
@@ -61,7 +61,7 @@ def get_closest_parking_by_address_from_client(address):
         global_parking_lots_by_address = ten_parking_lots
     ten_parking_lots = json.dumps(ten_parking_lots, ensure_ascii=False, default=str).encode('utf8')
     flag = 0
-    #print(global_parking_lots_by_address)
+    # print(global_parking_lots_by_address)
     return ten_parking_lots
 
 
@@ -82,10 +82,10 @@ def get_closest_parking_by_duration_specified_by_client(address, duration):
     global global_parking_lots_by_address
     # don't need this call if the client opens first the main page which is this function and then picks distance filter
     # get_closest_parking_by_address_from_client
-    #delete after
-    #global_parking_lots_by_address = array
-    #parking_filtered_by_duration = [tup for tup in global_parking_lots_by_address if tup[2] <= int(duration)]
-    parking_filtered_by_duration = get_closest_parking_by_duration(global_parking_lots_by_address,duration)
+    # delete after
+    # global_parking_lots_by_address = array
+    # parking_filtered_by_duration = [tup for tup in global_parking_lots_by_address if tup[2] <= int(duration)]
+    parking_filtered_by_duration = get_closest_parking_by_duration(global_parking_lots_by_address, duration)
     parking_filtered_by_duration = json.dumps(parking_filtered_by_duration, ensure_ascii=False, default=str).encode(
         'utf8')
     return parking_filtered_by_duration
@@ -94,21 +94,21 @@ def get_closest_parking_by_duration_specified_by_client(address, duration):
 @app.route('/closest_parking_company/<address>/<company>', endpoint='func1')
 def get_parking_by_company(address, company):
     global flag
-    response=[]
+    response = []
     if company == "אחוזת החוף":
         flag = 1
         for parking in global_parking_lots_by_address:
             if "AhuzotCode" in parking[0]:
                 response.append(parking)
     if company == "סנטרל פארק":
-        #maybe don't need the flag
+        # maybe don't need the flag
         flag = 2
         for parking in global_parking_lots_by_address:
             if "CentralParkCode" in parking[0]:
                 response.append(parking)
 
     response = json.dumps(response, ensure_ascii=False, default=str).encode('utf8')
-    #parking_lots = get_closest_parking_by_address_from_client(address)
+    # parking_lots = get_closest_parking_by_address_from_client(address)
     return response
 
 
@@ -134,13 +134,13 @@ def get_parking_by_status(address, status):
 def get_parking_by_name(parking_name):
     print(global_parking_lots_info)
     for park in global_parking_lots_info:
-        #print(park['Name'])
+        # print(park['Name'])
         if park['Name'] == parking_name:
             if "AhuzotCode" in park:
-                #update status in hauzot-ahof parking
-                update_status(park,park['AhuzotCode'])
+                # update status in hauzot-ahof parking
+                update_status(park, park['AhuzotCode'])
             else:
-                tuple = (park,"")
+                tuple = (park, "")
                 update_parking_lot_status(tuple)
             park = json.dumps(park, ensure_ascii=False, default=str).encode('utf8')
             return park
@@ -153,6 +153,45 @@ def get_parking_by_name(parking_name):
     #     if name is not None:
     #         return name
     # return "Not found"
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    request_data = request.data  # getting the response data
+    request_data = json.loads(request_data.decode('utf-8'))
+    print('hi')
+    email = request_data['email']
+    name = request_data['name']
+    password = request_data['password']
+    validatePassword = request_data['validatePassword']
+    user = {'name': name, 'email': email, 'password': password, 'parking-history': [], 'parking_location': ''}
+    # check if this user already exits
+    if not user_exist_db(user):
+        add_user_to_db(user)
+        print('added')
+        response = 'User registered successfully'
+        return jsonify({'response': response})
+    print("user exists")
+    response = 'User is already exist'
+    return jsonify({'response': response})
+
+@app.route('/signIn', methods=['POST'])
+def signIn():
+    request_data = request.data  # getting the response data
+    request_data = json.loads(request_data.decode('utf-8'))
+    print('hi')
+    email = request_data['email']
+    password = request_data['password']
+    print(email)
+    print(password)
+    if user_exist_by_email_password(email, password):
+        #add_user_to_db(user)
+        #print('added')
+        response = 'exist'
+        return jsonify({'response': response})
+    print("user not exists")
+    response = 'User not exist'
+    return jsonify({'response': response})
 
 
 if __name__ == "__main__":
