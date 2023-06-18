@@ -1,3 +1,4 @@
+from mongoDB import *
 import base64
 import requests
 from urllib.parse import urlparse, parse_qs
@@ -21,13 +22,15 @@ import functools
 import aiohttp
 from bs4 import BeautifulSoup
 import slimit
-from mangoDB import *
+
 
 PARKING_LIST_URL = 'https://centralpark.co.il/רשימת-חניונים/'
 STATUS_TO_FLOAT = {'פנוי': 0, '': 1}
 ISRAEL_TZ = timezone(timedelta(hours=2))
 # Google Maps API key
-api_key = "AIzaSyA4DV1zbLCECX_kcZAWA4vCoti9Hm156W4"
+# api_key = "AIzaSyA4DV1zbLCECX_kcZAWA4vCoti9Hm156W4"
+#api_key ="AIzaSyDKupYcq3t0hyHTn-YQRriH57ch-Ekw0cs"
+api_key='AIzaSyDGG3PgHwpThGyw-BeKsaTs3mS5eS3BZXE'
 
 
 def get_gps_coordinates(hebrew_address):
@@ -43,7 +46,6 @@ def get_gps_coordinates(hebrew_address):
 
     # Make the API request
     response = requests.get(endpoint, params=params)
-
     # Get the latitude and longitude from the response
     latitude = response.json()["results"][0]["geometry"]["location"]["lat"]
     longitude = response.json()["results"][0]["geometry"]["location"]["lng"]

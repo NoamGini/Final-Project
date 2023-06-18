@@ -12,7 +12,10 @@ user_password = "N0@z!u386"
 tFault = "OK"
 fWSPwd = "10fd90e7004c6499fe86146fc888eee62c2d1e1ae0bf7a1c34c3346cec15fada"
 # Google Maps API key
-api_key = "AIzaSyA4DV1zbLCECX_kcZAWA4vCoti9Hm156W4"
+#api_key= "AIzaSyBmzgNX44L4plhmf4j5BFnUtfHmIWnD9Ts"
+api_key='AIzaSyDGG3PgHwpThGyw-BeKsaTs3mS5eS3BZXE'
+#api_key ="AIzaSyDKupYcq3t0hyHTn-YQRriH57ch-Ekw0cs"
+# api_key = "AIzaSyA4DV1zbLCECX_kcZAWA4vCoti9Hm156W4"
 client = Client(wsdl='http://parkinfo.ahuzot.co.il/cp.asmx?wsdl')
 
 
@@ -23,7 +26,6 @@ client = Client(wsdl='http://parkinfo.ahuzot.co.il/cp.asmx?wsdl')
     # 'LastUpdateFromDambach': datetime.datetime(2023, 3, 22, 13, 16, 39, 317000),
 def get_all_lots_status():
     all_parking_lots_status = client.service.GetAllCarParkStatus(username, user_password, tFault, fWSPwd)
-    #print(all_parking_lots_status['GetAllCarParkStatusResult']['CarParkDynamicDetails'])
     return all_parking_lots_status['GetAllCarParkStatusResult']['CarParkDynamicDetails']
 
 
@@ -55,7 +57,6 @@ def all_few_parking_lots_left():
         # there is only 60 with real time status - "סגור" appease 3 times "    " = appease 8 times
         if parking_lot['InformationToShow'] == "מעט":
             all_free_parking_lots_array.append(parking_lot)
-    # print(all_free_parking_lots_array)
     all_free_parking_lots_info = get_parking_list_info(all_free_parking_lots_array)
     return all_free_parking_lots_info
 
@@ -92,7 +93,6 @@ def get_parking_lot_status(ahuzot_code):
     CarParkingStatus = client.service.GetCarParkStatus(ahuzot_code, username, user_password, tFault, fWSPwd)
     CarParkingStatusData = CarParkingStatus['GetCarParkStatusResult']
     status = CarParkingStatusData['InformationToShow']
-    #print(f'the status of parking lot with code number: {ahuzot_code} is: {status}')
     return status
 
 
@@ -113,9 +113,12 @@ def get_all_parking_lots_info_hauzot():
 def get_parking_list_info(parking_list):
     parking_list_info = []
     for i in parking_list:
+        if i['InformationToShow'] == '    ':
+            print("found empty status")
+            continue
         code = (i['AhuzotCode'])
         info = get_parking_lot_location_details(code)
-        updated_info = update_status(info,code)
+        updated_info = update_status(info, code)
         # status = get_parking_lot_status(code)
         # info['InformationToShow']= status
         # info.append({'InformationToShow': status})
@@ -138,14 +141,9 @@ def get_gps_coordinates(hebrew_address):
 
     # Make the API request
     response = requests.get(endpoint, params=params)
-
-    # Get the latitude and longitude from the response
+     # Get the latitude and longitude from the response
     latitude = response.json()["results"][0]["geometry"]["location"]["lat"]
     longitude = response.json()["results"][0]["geometry"]["location"]["lng"]
-
-    # Print the latitude and longitude
-    # print(latitude)
-    # print(longitude)
 
     return latitude, longitude
 
@@ -227,29 +225,3 @@ def get_parking_info_by_name(name):
             updated_parking_info = update_status(parking_info, i['AhuzotCode'])
             return updated_parking_info
     return None
-
-
-def main():
-    get_parking_lot_location_details(43)
-    # get_parking_lot_status(43)
-
-    # closet_places = get_closest_parking_by_address("המרד 30, תל אביב")
-    # closest_parkingLots_by_d = get_closest_parking_by_distance(closet_places, 500)
-    # print(closest_parkingLots_by_d)
-    #print(get_all_lots_status())
-    #print(get_parking_lot_location_details(78))
-    #print(get_parking_lot_status(43))
-    # info = get_parking_info_by_name('ברוריה')
-    # print(info)
-    # free_parking = all_few_parking_lots_left()
-    # print(free_parking)
-    #print(get_parking_list_info(free_parking))
-    # print(get_parking_list_info(free_parking))
-    # closest_places = get_closest_parking_by_address_hauzot('המרד 30 תל-אביב יפו')
-    # print(closest_places)
-    # print(get_closest_parking_by_distance_hauzot(closest_places, 500))
-    # print(closest_places[0][2])
-
-
-if __name__ == '__main__':
-    main()
