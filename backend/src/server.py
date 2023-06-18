@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
-from mongoDB import *
+from backend.src.mongoDB import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 

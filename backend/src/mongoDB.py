@@ -1,8 +1,8 @@
 import pymongo
-from getDataFromURL import *
-from getDataFromAPI import *
-from users import *
-from parking_kahol_lavan import *
+from backend.src.getDataFromURL import *
+from backend.src.getDataFromAPI import *
+from backend.src.users import *
+from backend.src.parking_kahol_lavan import *
 from pymongo import MongoClient
 
 

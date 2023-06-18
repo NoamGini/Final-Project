@@ -1,4 +1,4 @@
-from parking_kahol_lavan import *
+from backend.src.parking_kahol_lavan import *
 
 
 

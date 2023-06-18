@@ -1,4 +1,4 @@
-from mongoDB import *
+from backend.src.mongoDB import *
 import base64
 import requests
 from urllib.parse import urlparse, parse_qs
@@ -21,7 +21,6 @@ import asyncio
 import functools
 import aiohttp
 from bs4 import BeautifulSoup
-import slimit
 
 
 PARKING_LIST_URL = 'https://centralpark.co.il/רשימת-חניונים/'
