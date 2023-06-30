@@ -318,6 +318,6 @@ if __name__ == "__main__":
     # app.run()
     #allow_unsafe_werkzeug = True
     # Start the scheduler
-    get_closest_parking_by_address_from_client("המרד 30, תל אביב")
+    #get_closest_parking_by_address_from_client("המרד 30, תל אביב")
     scheduler.start()
     socketio.run(app, allow_unsafe_werkzeug=True)
