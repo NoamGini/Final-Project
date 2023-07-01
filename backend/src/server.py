@@ -226,6 +226,16 @@ def update_grabbed_parking():
     print(parking)
     # Update the data
     socketio.emit('grabbed_parking_update', parking)
+
+    # Schedule the parking status update after 30 seconds
+    scheduler.add_job(
+        func=update_parking_hidden,
+        trigger='date',
+        run_date=datetime.now() + timedelta(seconds=30),
+        args=(email, address),  # Pass the parking address as an argument
+        id='update_parking_hidden',
+        name='Update parking hidden'
+    )
     return user
 
 
@@ -246,12 +256,8 @@ def update_release_parking():
     request_data = request.data  # getting the response data
     request_data = json.loads(request_data.decode('utf-8'))
     print(request_data)
-    # user = request_data['user']
-    # park = request_data['park']
     email = request_data['email']
     address = request_data['address']
-    #old_parking = get_parking_kl_by_address(address)
-    #print(old_parking)
     user, parking = update_parking_release(email, address)
     parking = json.dumps(parking, ensure_ascii=False, default=str).encode('utf8')
     print(parking)
@@ -270,8 +276,15 @@ def handle_connect():
 def handle_disconnect():
     print('SocketIO client disconnected')
 
+def update_parking_hidden(email, address):
+    parking = update_parking_status_hidden(email, address)
+    parking = json.dumps(parking, ensure_ascii=False, default=str).encode('utf8')
+    print(parking)
+    # Update the data
+    socketio.emit('hidden_parking_update', parking)
+
+
 def update_parking_lots():
-    #global global_parking_lots_by_address
 
     # Get the data from the database
     TLV_parking_list_hauzot = get_all_data_from_collection_hauzot()
