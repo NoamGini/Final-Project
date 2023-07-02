@@ -4,16 +4,10 @@ from backend.src.getDataFromAPI import *
 from backend.src.users import *
 from backend.src.parking_kahol_lavan import *
 from pymongo import MongoClient
+from backend.constants import *
 
 
 def update_document(collection_name, filter_query, update_query):
-    """
-    Update a document in the specified MongoDB collection.
-    :param collection_name: Name of the collection to update document.
-    :param filter_query: Filter query to select the document to update.
-    :param update_query: Update query to apply on the selected document.
-    :return: None
-    """
     client = MongoClient()  # Connect to default MongoDB server running on localhost
     db = client.mydatabase  # Select the database to work with
     collection = db[collection_name]  # Select the collection to update document
@@ -22,15 +16,15 @@ def update_document(collection_name, filter_query, update_query):
 
 def insert_parking_lot_data_to_mongodb():
     # Set up MongoDB client and connect to database
-    client = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client['parking_spot']
+    client = pymongo.MongoClient(MONGO_URL_ADDRESS)
+    db = client[PARKING_SPOT]
 
-    collection1 = db['central_park']
+    collection1 = db[CENTRAL_PARK_DB]
     data1 = get_parking_list()
     for parking in data1:
         collection1.insert_one(parking)
 
-    collection2 = db['hauzot_ahof']
+    collection2 = db[HAUZOT_AHOF_DB]
     data2 = get_all_parking_lots_info_hauzot()
     for parking in data2:
         collection2.insert_one(parking)
@@ -39,11 +33,11 @@ def insert_parking_lot_data_to_mongodb():
 
 def insert_users_data_to_mongodb():
     # Set up MongoDB client and connect to database
-    client = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client['parking_spot']
+    client = pymongo.MongoClient(MONGO_URL_ADDRESS)
+    db = client[PARKING_SPOT]
 
-    collection1 = db['users']
-    users_data = get_users_list()
+    collection1 = db[USERS_DB]
+    users_data = create_users_list()
     for user in users_data:
         collection1.insert_one(user)
     # Close MongoDB client
@@ -51,11 +45,11 @@ def insert_users_data_to_mongodb():
 
 def insert_parking_kahol_lavan_data_to_mongodb():
     # Set up MongoDB client and connect to database
-    client = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client['parking_spot']
+    client = pymongo.MongoClient(MONGO_URL_ADDRESS)
+    db = client[PARKING_SPOT]
 
-    collection1 = db['parkings_kahol_lavan']
-    parking_data = get_parking_kahol_lavan_list()
+    collection1 = db[PARKING_KAHOL_LAVAN_DB]
+    parking_data = generate_list_kahol_lavan()
     for parking in parking_data:
         collection1.insert_one(parking)
     # Close MongoDB client
@@ -63,11 +57,11 @@ def insert_parking_kahol_lavan_data_to_mongodb():
 
 def get_all_data_from_collection_central():
     # Set up MongoDB client and connect to database
-    client_central = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client_central['parking_spot']
+    client_central = pymongo.MongoClient(MONGO_URL_ADDRESS)
+    db = client_central[PARKING_SPOT]
 
     # Get all data from MongoDB collection
-    collection = db['central_park']
+    collection = db[CENTRAL_PARK_DB]
     data = collection.find()
     list_data = list(data)
 
@@ -80,11 +74,11 @@ def get_all_data_from_collection_central():
 
 def get_all_data_from_collection_hauzot():
     # Set up MongoDB client and connect to database
-    client_hauzot = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client_hauzot['parking_spot']
+    client_hauzot = pymongo.MongoClient(MONGO_URL_ADDRESS)
+    db = client_hauzot[PARKING_SPOT]
 
     # Get all data from MongoDB collection
-    collection = db['hauzot_ahof']
+    collection = db[HAUZOT_AHOF_DB]
     data = collection.find()
     list_data = list(data)
 
@@ -96,30 +90,21 @@ def get_all_data_from_collection_hauzot():
 
 
 def add_user_to_db(user):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['users']  # replace with your collection name
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[USERS_DB]  # replace with your collection name
     collection.insert_one(user)
     # Close MongoDB client
     client.close()
 
 
-# def add_parking_to_db(user):
-#     client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-#     db = client['parking_spot']  # replace with your database name
-#     collection = db['users']  # replace with your collection name
-#     collection.insert_one(user)
-#     # Close MongoDB client
-#     client.close()
-
-
 def get_all_data_from_collection_kahol_lavan():
     # Set up MongoDB client and connect to database
-    client_hauzot = pymongo.MongoClient('mongodb://localhost:27017/')
-    db = client_hauzot['parking_spot']
+    client_hauzot = pymongo.MongoClient(MONGO_URL_ADDRESS)
+    db = client_hauzot[PARKING_SPOT]
 
     # Get all data from MongoDB collection
-    collection = db['parkings_kahol_lavan']
+    collection = db[PARKING_KAHOL_LAVAN_DB]
     data = collection.find()
     list_data = list(data)
 
@@ -131,208 +116,158 @@ def get_all_data_from_collection_kahol_lavan():
 
 
 def update_parking_release_time(email, address, release_time):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['parkings_kahol_lavan']  # replace with your collection name
-    resultParking = collection.find({'address': address})
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[PARKING_KAHOL_LAVAN_DB]  # replace with your collection name
+    resultParking = collection.find({ADDRESS2: address})
     parkingDB = None
     userDB = None
     for i in resultParking:
-        print(i)
         parkingDB = i
-        collection.update_one({'address': parkingDB['address']}, {'$set': {'release_time': release_time,
-                                                                     'status': 'מתפנה בקרוב', 'hidden': False}})
-        parkingDB['release_time'] = release_time
-        parkingDB['status'] = 'מתפנה בקרוב'
+        collection.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {RELEASE_TIME: release_time,
+                                                                     STATUS: STATUSES[4], HIDDEN: False}})
+        parkingDB[RELEASE_TIME] = release_time
+        parkingDB[STATUS] = STATUSES[4]
         break
 
-    collection2 = db['users']
-    resultUser = collection2.find({'email': email})
+    collection2 = db[USERS_DB]
+    resultUser = collection2.find({EMAIL: email})
     for i in resultUser:
-        print(i)
         userDB = i
-        points = userDB['points']
+        points = userDB[POINTS]
         points += 1
-        collection2.update_one({'email': userDB['email']}, {'$set': {'points': points, 'parking': parkingDB}})
-        userDB['parking'] = parkingDB
+        collection2.update_one({EMAIL: userDB[EMAIL]}, {'$set': {POINTS: points, PARKING: parkingDB}})
+        userDB[PARKING] = parkingDB
         break
     # Close MongoDB client
     client.close()
-    print(userDB)
     return userDB, parkingDB
 
 
-
-
-# def update_parking_release(user, parking):
-#     client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-#     db = client['parking_spot']  # replace with your database name
-#     collection1 = db['users']  # replace with your collection name
-#     #add points to the user
-#     resultUser = collection1.find({'name': user['name'], 'email': user['email']})
-#     for i in resultUser:
-#         print(i)
-#         userDB = i
-#     points = userDB['points']
-#     points += 2
-#     collection1.update_one({'email': userDB['email']}, {'$set': {'parking': None, 'points': points}})
-#
-#     collection2 = db['parkings_kahol_lavan']  # replace with your collection name
-#     resultParking = collection1.find({'address': parking['address']})
-#     parkingDB = parking
-#     for i in resultParking:
-#         print(i)
-#         parkingDB = i
-#
-#     collection2.update_one({'address': parkingDB['address']}, {'$set': {'release_time': "", 'status': 'פנוי'}})
-#
-#     client.close()
-
-
 def update_parking_release(email, address):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection1 = db['users']  # replace with your collection name
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection1 = db[USERS_DB]  # replace with your collection name
     # add points to the user
 
     # Initialize userDB with None
     userDB = None
 
-    resultUser = collection1.find({'email': email})
+    resultUser = collection1.find({EMAIL: email})
     for i in resultUser:
-        print(i)
         userDB = i
-        points = userDB['points']
+        points = userDB[POINTS]
         points += 2
-        userDB['points'] = points
-        userDB['parking'] = None
-        collection1.update_one({'email': email}, {'$set': {'parking': None, 'points': points}})
+        userDB[POINTS] = points
+        userDB[PARKING] = None
+        collection1.update_one({EMAIL: email}, {'$set': {PARKING: None, POINTS: points}})
         break
 
-    collection2 = db['parkings_kahol_lavan']  # replace with your collection name
-    resultParking = collection2.find({'address': address})
+    collection2 = db[PARKING_KAHOL_LAVAN_DB]  # replace with your collection name
+    resultParking = collection2.find({ADDRESS2: address})
     parkingDB = None
-    print(resultParking)
     for i in resultParking:
-        print(i)
         parkingDB = i
-        collection2.update_one({'address': parkingDB['address']}, {'$set': {'release_time': "", 'status': 'פנוי',
-                                                                            'hidden': False, }})
-        parkingDB['status']='פנוי'
-        parkingDB['release_time']=""
-        parkingDB['hidden'] = False
+        collection2.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {RELEASE_TIME: EMPTY, STATUS: STATUSES[0],
+                                                                            HIDDEN: False, }})
+        parkingDB[STATUS]=STATUSES[0]
+        parkingDB[RELEASE_TIME]=EMPTY
+        parkingDB[HIDDEN] = False
         break
 
     # Close MongoDB client
     client.close()
-    print("printing userDB")
-    print(userDB)
     return userDB, parkingDB
 
 
 def update_grabbing_parking(email, address):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    users_collection = db['users']  # replace with your collection name
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    users_collection = db[USERS_DB]  # replace with your collection name
 
     # Check if there is a user with the given parking and release the parking
-    users_with_parking = users_collection.count_documents({'parking': address})
+    users_with_parking = users_collection.count_documents({PARKING: address})
     if users_with_parking > 0:
-        users_to_update = users_collection.find({'parking': address})
+        users_to_update = users_collection.find({PARKING: address})
         for user in users_to_update:
-            users_collection.update_one({'email': user['email']}, {'$set': {'parking': None}})
+            users_collection.update_one({EMAIL: user[EMAIL]}, {'$set': {PARKING: None}})
 
     # add points to the user
     userDB = None
-    resultUser = users_collection.find({'email': email})
+    resultUser = users_collection.find({EMAIL: email})
     for i in resultUser:
-        print(i)
         userDB = i
-        points = userDB['points']
+        points = userDB[POINTS]
         points += 2
-        userDB['points'] = points
-        users_collection.update_one({'email': email}, {'$set': {'points': points}})
+        userDB[POINTS] = points
+        users_collection.update_one({EMAIL: email}, {'$set': {POINTS: points}})
         break
 
-    parking_collection = db['parkings_kahol_lavan']  # replace with your collection name
-    resultParking = parking_collection.find({'address': address})
+    parking_collection = db[PARKING_KAHOL_LAVAN_DB]  # replace with your collection name
+    resultParking = parking_collection.find({ADDRESS2: address})
     parkingDB=None
-    print(resultParking)
     for i in resultParking:
-        print(i)
         parkingDB = i
-        parking_collection.update_one({'address': parkingDB['address']}, {'$set': {'release_time': "", 'status': 'תפוס', }})
-        parkingDB['status']='תפוס'
-        parkingDB['release_time']=""
-        parking_collection.update_one({'email': email}, {'$set': {'parking': parkingDB}})
-        userDB['parking'] = parkingDB
+        parking_collection.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {RELEASE_TIME: EMPTY, STATUS: STATUSES[3], }})
+        parkingDB[STATUS]=STATUSES[3]
+        parkingDB[RELEASE_TIME]=EMPTY
+        parking_collection.update_one({EMAIL: email}, {'$set': {PARKING: parkingDB}})
+        userDB[PARKING] = parkingDB
         break
 
     # Close MongoDB client
     client.close()
-    print(userDB)
-    print(parkingDB)
     return userDB, parkingDB
 
 
 def get_user_points(user):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['users']
-    result = collection.find({'name': user['name'], 'email': user['email']})
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[USERS_DB]
+    result = collection.find({NAME2: user[NAME2], EMAIL: user[EMAIL]})
     for i in result:
-        print(i)
         user = i
-    points = user['points']
-    print(f"the result: {points}")
+    points = user[POINTS]
     return points
 
 
 def update_parking_status_hidden(email, address):
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['parking_spot']
-    parking_collection = db['parkings_kahol_lavan']
-    users_collection = db['users']
-    resultParking = parking_collection.find({'address': address})
+    client = MongoClient(MONGO_URL_ADDRESS)
+    db = client[PARKING_SPOT]
+    parking_collection = db[PARKING_KAHOL_LAVAN_DB]
+    users_collection = db[USERS_DB]
+    resultParking = parking_collection.find({ADDRESS2: address})
     parkingDB = None
-    print(resultParking)
     for i in resultParking:
-        print(i)
         parkingDB = i
         # parkingDB = parking_collection.find_one_and_update(
         #     {'address': parkingDB['address']}, {'$set': {'hidden': True, }})
-        parking_collection.update_one({'address': parkingDB['address']}, {'$set': {'hidden': True, }})
-        parkingDB['hidden'] = True
+        parking_collection.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {HIDDEN: True, }})
+        parkingDB[HIDDEN] = True
         break
 
     # add points to the user
     userDB = None
-    resultUser = users_collection.find({'email': email})
+    resultUser = users_collection.find({EMAIL: email})
     for i in resultUser:
-        print(i)
         userDB = i
         # userDB = users_collection.parking_collection.find_one_and_update({'email': userDB['email']},
         #                                                                  {'$set': {'parking': parkingDB}})
-        users_collection.update_one({'email': userDB['email']},{'$set': {'parking': parkingDB}})
-        parkingDB['hidden'] = True
+        users_collection.update_one({EMAIL: userDB[EMAIL]},{'$set': {PARKING: parkingDB}})
+        parkingDB[HIDDEN] = True
         break
 
     # Close MongoDB client
     client.close()
-    print("printing userDB")
-    print(userDB)
-    #return user also??
     return parkingDB
 
 
 def user_exist_db(user):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['users']
-    result = collection.find({'name': user['name'], 'email': user['email']})
-    print(f"the result: {result}")
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[USERS_DB]
+    result = collection.find({NAME2: user[NAME2], EMAIL: user[EMAIL]})
     for i in result:
-        print(i)
         if i is not None:
             client.close()
             return True
@@ -340,12 +275,11 @@ def user_exist_db(user):
     return False
 
 def user_exist_by_email_password(email, password):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['users']
-    result = collection.find({'email': email, 'password': password})
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[USERS_DB]
+    result = collection.find({EMAIL: email, PASSWORD: password})
     for i in result:
-        print(i)
         if i is not None:
             client.close()
             return True
@@ -354,43 +288,26 @@ def user_exist_by_email_password(email, password):
 
 
 def get_user_by_email_password(email, password):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['users']
-    result = collection.find({'email': email, 'password': password})
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[USERS_DB]
+    result = collection.find({EMAIL: email, PASSWORD: password})
     user = None
     for i in result:
-        print(i)
         user = i
         client.close()
         return user
     client.close()
     return user
 
-#
-# def get_user_by_email(email):
-#     client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-#     db = client['parking_spot']  # replace with your database name
-#     collection = db['users']
-#     result = collection.find({'email': email})
-#     user = None
-#     for i in result:
-#         print(i)
-#         user = i
-#         client.close()
-#         return user
-#     client.close()
-#     return user
-
 
 def get_parking_kl_by_address(address):
-    client = MongoClient('mongodb://localhost:27017/')  # replace with your MongoDB URI
-    db = client['parking_spot']  # replace with your database name
-    collection = db['parkings_kahol_lavan']
-    result = collection.find({'address': address})
+    client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
+    db = client[PARKING_SPOT]  # replace with your database name
+    collection = db[PARKING_KAHOL_LAVAN_DB]
+    result = collection.find({ADDRESS2: address})
     parking = None
     for i in result:
-        print(i)
         parking = i
         client.close()
         return parking
@@ -398,22 +315,8 @@ def get_parking_kl_by_address(address):
     return parking
 
 
-# def update_all_documents(collection_name, update_query):
-#     """
-#     Update all documents in the specified MongoDB collection.
-#     :param collection_name: Name of the collection to update documents.
-#     :param update_query: Update query to apply on all documents in the collection.
-#     :return: None
-#     """
-#     client = MongoClient()  # Connect to default MongoDB server running on localhost
-#     db = client.mydatabase  # Select the database to work with
-#     collection = db[collection_name]  # Select the collection to update documents
-#
-#     result = collection.update_many({}, update_query)
-#     print(f"Number of documents matched: {result.matched_count}")
-#     print(f"Number of documents modified: {result.modified_count}")
-
 def main():
+
     #insert_parking_kahol_lavan_data_to_mongodb()
     insert_users_data_to_mongodb()
     #users_list = get_users_list()

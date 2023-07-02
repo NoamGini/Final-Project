@@ -1,5 +1,7 @@
-MONGO_URI = "mongodb://localhost:27017/"
-MONGO_DBNAME = "parking_spot"
+from backend.constants import MONGO_URL_ADDRESS, PARKING_SPOT, SECRET, PRODUCTION_MODE
+
+MONGO_URI = MONGO_URL_ADDRESS
+MONGO_DBNAME = PARKING_SPOT
 DEBUG = False  # Set to False in production
-SECRET_KEY = 'secret'  # A secret key for session encryption
-ENVIRONMENT = "production"
+SECRET_KEY = SECRET # A secret key for session encryption
+ENVIRONMENT = PRODUCTION_MODE

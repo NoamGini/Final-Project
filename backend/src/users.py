@@ -1,4 +1,5 @@
 from backend.src.parking_kahol_lavan import *
+from backend.constants import *
 
 
 def create_users_list():
@@ -10,12 +11,12 @@ def create_users_list():
         parking = kahol_lavan_parking_list[i]
 
         user = {
-            'email': f'user{i + 1}@gmail.com',
-            'name': f'User {i + 1}',
-            'password': '12345678',
-            'parking': parking,
-            'points': 5,
-            'avatar': None
+            EMAIL: f'user{i + 1}@gmail.com',
+            NAME2: f'User {i + 1}',
+            PASSWORD: '12345678',
+            PARKING: parking,
+            POINTS: 5,
+            AVATAR: None
         }
 
         users_list.append(user)
@@ -26,12 +27,12 @@ def create_users_list():
 def get_users_list(users_list):
     parking10 = generate_list_kahol_lavan()[9]
     parking11 = generate_list_kahol_lavan()[10]
-    user1 = {'email': 'noam@gmail.com', 'name': 'Noam', 'password': '12345678', 'parking': None, 'points': 5,
-             'avatar': None}
-    user2 = {'email': 'noa@gmail.com', 'name': 'Noa', 'password': '12345678', 'parking': parking10, 'points': 5,
-             'avatar': None}
-    user3 = {'email': 'amit@gmail.com', 'name': 'Amit', 'password': '12345678', 'parking': parking11, 'points': 5,
-             'avatar': None}
+    user1 = {EMAIL: 'noam@gmail.com', NAME2: 'Noam', PASSWORD: '12345678', PARKING: None, POINTS: 5,
+             AVATAR: None}
+    user2 = {EMAIL: 'noa@gmail.com', NAME2: 'Noa', PASSWORD: '12345678', PARKING: parking10, POINTS: 5,
+             AVATAR: None}
+    user3 = {EMAIL: 'amit@gmail.com', NAME2: 'Amit', PASSWORD: '12345678', PARKING: parking11, POINTS: 5,
+             AVATAR: None}
 
     users_list.append(user1)
     users_list.append(user2)

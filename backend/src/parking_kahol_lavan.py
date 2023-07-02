@@ -1,10 +1,12 @@
 import googlemaps
-api_key = 'AIzaSyDGG3PgHwpThGyw-BeKsaTs3mS5eS3BZXE'
+from backend.constants import *
+
 
 
 def create_parking_database(starting_point, num_parkings):
+
     # Initialize the Google Maps client
-    gmaps = googlemaps.Client(api_key)
+    gmaps = googlemaps.Client(GOOGLE_MAPS_API_KEY)
 
     # Initialize the database
     generated_list = []
@@ -22,19 +24,19 @@ def create_parking_database(starting_point, num_parkings):
         # Retrieve coordinates for the current address
         geocode_result = gmaps.geocode(address)
         if geocode_result:
-            latitude = geocode_result[0]['geometry']['location']['lat']
-            longitude = geocode_result[0]['geometry']['location']['lng']
+            latitude = geocode_result[0][GEOMETRY][LOCATION][LATITUDE]
+            longitude = geocode_result[0][GEOMETRY][LOCATION][LONGITUDE]
         else:
-            raise ValueError(f'Invalid address: {address}')
+            raise ValueError(INVALID_ADDRESS + f'{address}')
 
         # Create the parking entry
         parking = {
-            'address': address,
-            'latitude': latitude,
-            'longitude': longitude,
-            'release_time': '',
-            'status': 'תפוס',
-            'hidden': True
+            ADDRESS2: address,
+            KL_LATITUDE: latitude,
+            KL_LONGITUDE: longitude,
+            RELEASE_TIME: EMPTY,
+            STATUS: STATUSES[3],
+            HIDDEN: True
         }
 
         # Add the parking to the list
@@ -45,41 +47,41 @@ def create_parking_database(starting_point, num_parkings):
 
 
 def get_parking_kahol_lavan_list(parking_kahol_lavan_list):
-    parking1 = {'address': 'אשתורי הפרחי 12, תל אביב', 'latitude': 32.0896975, 'longitude': 34.780284,
-                'release_time': "", 'status': 'פנוי', 'hidden': False}
+    parking1 = {ADDRESS2: 'אשתורי הפרחי 12, תל אביב', KL_LATITUDE: 32.0896975, KL_LONGITUDE: 34.780284,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking2 = {'address': 'דב הוז 5, תל אביב', 'latitude': 32.0797165, 'longitude': 34.7721574,
-                'release_time': "", 'status': 'פנוי', 'hidden': False}
+    parking2 = {ADDRESS2: 'דב הוז 5, תל אביב', KL_LATITUDE: 32.0797165, KL_LONGITUDE: 34.7721574,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking3 = {'address': 'שדרות היוצר 11, תל אביב', 'latitude': 32.0892596, 'longitude': 34.7796131,
-                'release_time': "", 'status': 'פנוי', 'hidden': False}
+    parking3 = {ADDRESS2: 'שדרות היוצר 11, תל אביב', KL_LATITUDE: 32.0892596, KL_LONGITUDE: 34.7796131,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking4 = {'address': 'הכובשים 43, תל אביב', 'latitude': 32.0695758, 'longitude': 34.7662558, 'release_time': "",
-                'status': 'פנוי', 'hidden': False}
+    parking4 = {ADDRESS2: 'הכובשים 43, תל אביב', KL_LATITUDE: 32.0695758, KL_LONGITUDE: 34.7662558,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking5 = {'address': 'חובבי ציון 10, תל אביב', 'latitude': 32.0750460, 'longitude': 34.7690299,
-                'release_time': "", 'status': 'פנוי', 'hidden': False}
+    parking5 = {ADDRESS2: 'חובבי ציון 10, תל אביב', KL_LATITUDE: 32.0750460, KL_LONGITUDE: 34.7690299,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking6 = {'address': 'לילינבלום 4, תל אביב', 'latitude': 32.0617856, 'longitude': 34.7675207, 'release_time': "",
-                'status': 'פנוי', 'hidden': False}
+    parking6 = {ADDRESS2: 'לילינבלום 4, תל אביב', KL_LATITUDE: 32.0617856, KL_LONGITUDE: 34.7675207,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking7 = {'address': 'חובבי ציון 3, תל אביב', 'latitude': 32.0744155, 'longitude': 34.7686057,
-                'release_time': "", 'status': 'פנוי', 'hidden': False}
+    parking7 = {ADDRESS2: 'חובבי ציון 3, תל אביב', KL_LATITUDE: 32.0744155, KL_LONGITUDE: 34.7686057,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking8 = {'address': 'בן עמי 12, תל אביב', 'latitude': 32.0784095, 'longitude': 34.7729590, 'release_time': "",
-                'status': 'פנוי', 'hidden': False}
+    parking8 = {ADDRESS2: 'בן עמי 12, תל אביב', KL_LATITUDE: 32.0784095, KL_LONGITUDE: 34.7729590,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking9 = {'address': 'המרד 36, תל אביב', 'latitude': 32.0645403, 'longitude': 34.7648474, 'release_time': "",
-                'status': 'פנוי', 'hidden': False}
+    parking9 = {ADDRESS2: 'המרד 36, תל אביב', KL_LATITUDE: 32.0645403, KL_LONGITUDE: 34.7648474,
+                RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
-    parking10 = {'address': 'לילינבלום 14, תל אביב', 'latitude': 32.0619556, 'longitude': 34.7686573,
-                 'release_time': "09:50", 'status': 'מתפנה בקרוב', 'hidden': False}
+    parking10 = {ADDRESS2: 'לילינבלום 14, תל אביב', KL_LATITUDE: 32.0619556, KL_LONGITUDE: 34.7686573,
+                 RELEASE_TIME: "09:50", STATUS: STATUSES[4], HIDDEN: False}
 
-    parking11 = {'address': 'מחנה יוסף 34, תל אביב', 'latitude': 32.0645131, 'longitude': 34.7667812,
-                 'release_time': "", 'status': 'תפוס', 'hidden': True}
+    parking11 = {ADDRESS2: 'מחנה יוסף 34, תל אביב', KL_LATITUDE: 32.0645131, KL_LONGITUDE: 34.7667812,
+                 RELEASE_TIME: EMPTY, STATUS: STATUSES[3], HIDDEN: True}
 
-    parking12 = {'address': 'דגניה 3, תל אביב', 'latitude': 32.0629708, 'longitude': 34.7647325,
-                 'release_time': "", 'status': 'פנוי', 'hidden': False}
+    parking12 = {ADDRESS2: 'דגניה 3, תל אביב', KL_LATITUDE: 32.0629708, KL_LONGITUDE: 34.7647325,
+                 RELEASE_TIME: EMPTY, STATUS: STATUSES[0], HIDDEN: False}
 
     parking_kahol_lavan_list.append(parking1)
     parking_kahol_lavan_list.append(parking2)
@@ -99,7 +101,7 @@ def get_parking_kahol_lavan_list(parking_kahol_lavan_list):
 
 def generate_list_kahol_lavan():
     parking_kahol_lavan_list = []
-    starting_points = ['שדרות רוטשילד 1, תל אביב', 'בני דן 1, תל אביב', 'בן יהודה 2, תל אביב']
+    starting_points = STARTING_POINTS
     num_parkings = 50
 
     parking_kahol_lavan_list = get_parking_kahol_lavan_list(parking_kahol_lavan_list)

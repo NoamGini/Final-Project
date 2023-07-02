@@ -1,7 +1,9 @@
+from backend.constants import MONGO_URL_ADDRESS, SECRET, FLASK_ENV_TEST, MONGO_DB_NAME
+
 TEST = True
-SECRET_KEY = 'secret'  # A secret key for session encryption
+SECRET_KEY = SECRET  # A secret key for session encryption
 # Environment Configuration
-FLASK_ENV = "test"
+FLASK_ENV = FLASK_ENV_TEST
 # MongoDB Configuration
-MONGO_URI = "mongodb://localhost:27017/"
-MONGO_DBNAME = "parking_spot_test"
+MONGO_URI = MONGO_URL_ADDRESS
+MONGO_DBNAME = MONGO_DB_NAME
