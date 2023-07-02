@@ -1,7 +1,50 @@
-parking_kahol_lavan_list = []
+import googlemaps
+api_key = 'AIzaSyDGG3PgHwpThGyw-BeKsaTs3mS5eS3BZXE'
 
 
-def get_parking_kahol_lavan_list():
+def create_parking_database(starting_point, num_parkings):
+    # Initialize the Google Maps client
+    gmaps = googlemaps.Client(api_key)
+
+    # Initialize the database
+    generated_list = []
+
+    street_num = starting_point.split(",")[0]
+    city = starting_point.split(",")[1]
+    street = street_num.split(" ")[0] + " " + street_num.split(" ")[1]
+    num = int(street_num.split(" ")[2])
+
+    for i in range(num_parkings):
+
+        address = f'{street} {num},{city}'
+        # address = f'{starting_point.split(",")[0].split(" ")[0]+starting_point.split(",")[0].split(" ")[1]} {i+2}, {starting_point.split(",")[1]}'
+
+        # Retrieve coordinates for the current address
+        geocode_result = gmaps.geocode(address)
+        if geocode_result:
+            latitude = geocode_result[0]['geometry']['location']['lat']
+            longitude = geocode_result[0]['geometry']['location']['lng']
+        else:
+            raise ValueError(f'Invalid address: {address}')
+
+        # Create the parking entry
+        parking = {
+            'address': address,
+            'latitude': latitude,
+            'longitude': longitude,
+            'release_time': '',
+            'status': 'תפוס',
+            'hidden': True
+        }
+
+        # Add the parking to the list
+        generated_list.append(parking)
+        num += 2
+
+    return generated_list
+
+
+def get_parking_kahol_lavan_list(parking_kahol_lavan_list):
     parking1 = {'address': 'אשתורי הפרחי 12, תל אביב', 'latitude': 32.0896975, 'longitude': 34.780284,
                 'release_time': "", 'status': 'פנוי', 'hidden': False}
 
@@ -52,3 +95,28 @@ def get_parking_kahol_lavan_list():
     parking_kahol_lavan_list.append(parking12)
 
     return parking_kahol_lavan_list
+
+
+def generate_list_kahol_lavan():
+    parking_kahol_lavan_list = []
+    starting_points = ['שדרות רוטשילד 1, תל אביב', 'בני דן 1, תל אביב', 'בן יהודה 2, תל אביב']
+    num_parkings = 50
+
+    parking_kahol_lavan_list = get_parking_kahol_lavan_list(parking_kahol_lavan_list)
+
+    for i in range(len(starting_points)):
+        starting_point = starting_points[i]
+        parking_kahol_lavan_list += create_parking_database(starting_point, num_parkings)
+
+    return parking_kahol_lavan_list
+
+
+def main():
+    parking_kahol_lavan_list = generate_list_kahol_lavan()
+    # Print the parking list
+    for parking in parking_kahol_lavan_list:
+        print(parking)
+
+
+if __name__ == '__main__':
+    main()
