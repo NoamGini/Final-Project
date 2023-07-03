@@ -75,10 +75,10 @@ def get_parking_lot_info(parking_name):
         parking_lot_info = {
             NAME: elements[0][VALUE],
             PARKING_CENTRAL_CODE: int(elements[3][RAW]),
-            PARKING_GPS_LAT: "%.4f" % elements[1][VALUE],
-            PARKING_GPS_LON: "%.4f" % elements[2][VALUE],
+            PARKING_GPS_LAT: FLOATING_POINT_FORMAT % elements[1][VALUE],
+            PARKING_GPS_LON: FLOATING_POINT_FORMAT % elements[2][VALUE],
             CAPACITY: elements[4][VALUE],
-            ADDRESS2: elements[6][VALUE] + " ," + elements[5][VALUE],
+            ADDRESS2: elements[6][VALUE] + COMMA + elements[5][VALUE],
             INFO_TO_SHOW: element_status,
             FREE_PARKING_LEFT: elements[13][VALUE]
         }

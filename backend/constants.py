@@ -84,6 +84,8 @@ PARKING_LIST_URL = 'https://centralpark.co.il/רשימת-חניונים/'
 STATUS_TO_FLOAT = {'פנוי': 0, '': 1}
 ISRAEL_TZ = timezone(timedelta(hours=2))
 
+FLOATING_POINT_FORMAT = "%.4f"
+COMMA = " ,"
 EMPTY = ''
 SCRIPT = 'script'
 DIV = 'div'
