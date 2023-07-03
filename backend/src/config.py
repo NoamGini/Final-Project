@@ -3,5 +3,5 @@ from backend.constants import MONGO_URL_ADDRESS, PARKING_SPOT, SECRET, PRODUCTIO
 MONGO_URI = MONGO_URL_ADDRESS
 MONGO_DBNAME = PARKING_SPOT
 DEBUG = False  # Set to False in production
-SECRET_KEY = SECRET # A secret key for session encryption
+SECRET_KEY = SECRET  # A secret key for session encryption
 ENVIRONMENT = PRODUCTION_MODE

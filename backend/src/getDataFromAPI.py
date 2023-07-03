@@ -54,7 +54,8 @@ def all_few_parking_lots_left():
 # info :{'AhuzotCode': 10, 'Name': 'בזל', 'Address': 'אשתורי הפרחי 5 תל-אביב יפו', 'GPSLattitude': Decimal('32.0898'),
 # 'GPSLongitude': Decimal('34.7798')}
 def get_parking_lot_location_details(ahuzot_code):
-    parking_lot_details = client.service.GetCarParkDetails(ahuzot_code, API_HAUZOT_USERNAME, API_HAUZOT_PASSWORD, TFAULT, FWS_PWD)
+    parking_lot_details = client.service.GetCarParkDetails(ahuzot_code, API_HAUZOT_USERNAME, API_HAUZOT_PASSWORD,
+                                                           TFAULT, FWS_PWD)
     parking_lot_details_dict = parking_lot_details[GET_CAR_PARK_STATIC_DETAILS]
     parking_lot_location = {k: parking_lot_details_dict[k] for k in
                             (PARKING_AHUZOT_CODE, NAME, ADDRESS, PARKING_GPS_LAT,
@@ -81,7 +82,8 @@ def get_parking_lot_location_details(ahuzot_code):
 
 # returns "פנוי" / "מעט" / "מלא"
 def get_parking_lot_status(ahuzot_code):
-    CarParkingStatus = client.service.GetCarParkStatus(ahuzot_code, API_HAUZOT_USERNAME, API_HAUZOT_PASSWORD, TFAULT, FWS_PWD)
+    CarParkingStatus = client.service.GetCarParkStatus(ahuzot_code, API_HAUZOT_USERNAME, API_HAUZOT_PASSWORD, TFAULT,
+                                                       FWS_PWD)
     CarParkingStatusData = CarParkingStatus[GET_CAR_PARK_STATUS_RES]
     status = CarParkingStatusData[INFO_TO_SHOW]
     return status
@@ -121,7 +123,7 @@ def get_gps_coordinates(hebrew_address):
     endpoint = GOOGLE_ENDPOINT
 
     params = {
-        ADDRESS2: hebrew_address,
+        ADDRESS_SMALL_LETTER: hebrew_address,
         KEY: GOOGLE_MAPS_API_KEY,
         LANGUAGE: HEBREW
     }

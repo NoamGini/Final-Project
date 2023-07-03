@@ -14,6 +14,7 @@ def update_document(collection_name, filter_query, update_query):
 
     result = collection.update_one(filter_query, update_query)
 
+
 def insert_parking_lot_data_to_mongodb():
     # Set up MongoDB client and connect to database
     client = pymongo.MongoClient(MONGO_URL_ADDRESS)
@@ -31,6 +32,7 @@ def insert_parking_lot_data_to_mongodb():
     # Close MongoDB client
     client.close()
 
+
 def insert_users_data_to_mongodb():
     # Set up MongoDB client and connect to database
     client = pymongo.MongoClient(MONGO_URL_ADDRESS)
@@ -43,6 +45,7 @@ def insert_users_data_to_mongodb():
     # Close MongoDB client
     client.close()
 
+
 def insert_parking_kahol_lavan_data_to_mongodb():
     # Set up MongoDB client and connect to database
     client = pymongo.MongoClient(MONGO_URL_ADDRESS)
@@ -54,6 +57,7 @@ def insert_parking_kahol_lavan_data_to_mongodb():
         collection1.insert_one(parking)
     # Close MongoDB client
     client.close()
+
 
 def get_all_data_from_collection_central():
     # Set up MongoDB client and connect to database
@@ -119,13 +123,14 @@ def update_parking_release_time(email, address, release_time):
     client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
     db = client[PARKING_SPOT]  # replace with your database name
     collection = db[PARKING_KAHOL_LAVAN_DB]  # replace with your collection name
-    resultParking = collection.find({ADDRESS2: address})
+    resultParking = collection.find({ADDRESS_SMALL_LETTER: address})
     parkingDB = None
     userDB = None
     for i in resultParking:
         parkingDB = i
-        collection.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {RELEASE_TIME: release_time,
-                                                                     STATUS: STATUSES[4], HIDDEN: False}})
+        collection.update_one({ADDRESS_SMALL_LETTER: parkingDB[ADDRESS_SMALL_LETTER]},
+                              {'$set': {RELEASE_TIME: release_time,
+                                        STATUS: STATUSES[4], HIDDEN: False}})
         parkingDB[RELEASE_TIME] = release_time
         parkingDB[STATUS] = STATUSES[4]
         break
@@ -164,14 +169,15 @@ def update_parking_release(email, address):
         break
 
     collection2 = db[PARKING_KAHOL_LAVAN_DB]  # replace with your collection name
-    resultParking = collection2.find({ADDRESS2: address})
+    resultParking = collection2.find({ADDRESS_SMALL_LETTER: address})
     parkingDB = None
     for i in resultParking:
         parkingDB = i
-        collection2.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {RELEASE_TIME: EMPTY, STATUS: STATUSES[0],
-                                                                            HIDDEN: False, }})
-        parkingDB[STATUS]=STATUSES[0]
-        parkingDB[RELEASE_TIME]=EMPTY
+        collection2.update_one({ADDRESS_SMALL_LETTER: parkingDB[ADDRESS_SMALL_LETTER]},
+                               {'$set': {RELEASE_TIME: EMPTY, STATUS: STATUSES[0],
+                                         HIDDEN: False, }})
+        parkingDB[STATUS] = STATUSES[0]
+        parkingDB[RELEASE_TIME] = EMPTY
         parkingDB[HIDDEN] = False
         break
 
@@ -204,13 +210,14 @@ def update_grabbing_parking(email, address):
         break
 
     parking_collection = db[PARKING_KAHOL_LAVAN_DB]  # replace with your collection name
-    resultParking = parking_collection.find({ADDRESS2: address})
-    parkingDB=None
+    resultParking = parking_collection.find({ADDRESS_SMALL_LETTER: address})
+    parkingDB = None
     for i in resultParking:
         parkingDB = i
-        parking_collection.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {RELEASE_TIME: EMPTY, STATUS: STATUSES[3], }})
-        parkingDB[STATUS]=STATUSES[3]
-        parkingDB[RELEASE_TIME]=EMPTY
+        parking_collection.update_one({ADDRESS_SMALL_LETTER: parkingDB[ADDRESS_SMALL_LETTER]},
+                                      {'$set': {RELEASE_TIME: EMPTY, STATUS: STATUSES[3], }})
+        parkingDB[STATUS] = STATUSES[3]
+        parkingDB[RELEASE_TIME] = EMPTY
         parking_collection.update_one({EMAIL: email}, {'$set': {PARKING: parkingDB}})
         userDB[PARKING] = parkingDB
         break
@@ -224,7 +231,7 @@ def get_user_points(user):
     client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
     db = client[PARKING_SPOT]  # replace with your database name
     collection = db[USERS_DB]
-    result = collection.find({NAME2: user[NAME2], EMAIL: user[EMAIL]})
+    result = collection.find({NAME_SMALL_LETTER: user[NAME_SMALL_LETTER], EMAIL: user[EMAIL]})
     for i in result:
         user = i
     points = user[POINTS]
@@ -236,13 +243,14 @@ def update_parking_status_hidden(email, address):
     db = client[PARKING_SPOT]
     parking_collection = db[PARKING_KAHOL_LAVAN_DB]
     users_collection = db[USERS_DB]
-    resultParking = parking_collection.find({ADDRESS2: address})
+    resultParking = parking_collection.find({ADDRESS_SMALL_LETTER: address})
     parkingDB = None
     for i in resultParking:
         parkingDB = i
         # parkingDB = parking_collection.find_one_and_update(
         #     {'address': parkingDB['address']}, {'$set': {'hidden': True, }})
-        parking_collection.update_one({ADDRESS2: parkingDB[ADDRESS2]}, {'$set': {HIDDEN: True, }})
+        parking_collection.update_one({ADDRESS_SMALL_LETTER: parkingDB[ADDRESS_SMALL_LETTER]},
+                                      {'$set': {HIDDEN: True, }})
         parkingDB[HIDDEN] = True
         break
 
@@ -253,7 +261,7 @@ def update_parking_status_hidden(email, address):
         userDB = i
         # userDB = users_collection.parking_collection.find_one_and_update({'email': userDB['email']},
         #                                                                  {'$set': {'parking': parkingDB}})
-        users_collection.update_one({EMAIL: userDB[EMAIL]},{'$set': {PARKING: parkingDB}})
+        users_collection.update_one({EMAIL: userDB[EMAIL]}, {'$set': {PARKING: parkingDB}})
         parkingDB[HIDDEN] = True
         break
 
@@ -266,13 +274,14 @@ def user_exist_db(user):
     client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
     db = client[PARKING_SPOT]  # replace with your database name
     collection = db[USERS_DB]
-    result = collection.find({NAME2: user[NAME2], EMAIL: user[EMAIL]})
+    result = collection.find({NAME_SMALL_LETTER: user[NAME_SMALL_LETTER], EMAIL: user[EMAIL]})
     for i in result:
         if i is not None:
             client.close()
             return True
     client.close()
     return False
+
 
 def user_exist_by_email_password(email, password):
     client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
@@ -305,7 +314,7 @@ def get_parking_kl_by_address(address):
     client = MongoClient(MONGO_URL_ADDRESS)  # replace with your MongoDB URI
     db = client[PARKING_SPOT]  # replace with your database name
     collection = db[PARKING_KAHOL_LAVAN_DB]
-    result = collection.find({ADDRESS2: address})
+    result = collection.find({ADDRESS_SMALL_LETTER: address})
     parking = None
     for i in result:
         parking = i
@@ -315,21 +324,27 @@ def get_parking_kl_by_address(address):
     return parking
 
 
-def main():
+def update_park_lot_status(updated_status, parking_name, db_name):
+    filter_query = {NAME: parking_name}
+    update_query = {'$set': {INFO_TO_SHOW: updated_status}}
+    update_document(db_name, filter_query, update_query)
 
-    #insert_parking_kahol_lavan_data_to_mongodb()
+
+def main():
+    # insert_parking_kahol_lavan_data_to_mongodb()
     insert_users_data_to_mongodb()
-    #users_list = get_users_list()
-    #get_user_points(users_list[0])
-    #kahol_lavan_list= get_parking_kahol_lavan_list()
-    #update_parking_release(users_list[0]['email'],kahol_lavan_list[0]['address'])
-    #users_list = get_users_list()
-    #kahol_lavan_list= get_parking_kahol_lavan_list()
-    #update_grabbing_parking(users_list[0]['email'], kahol_lavan_list[0]['address'])
-    #update_parking_release_time(users_list[0]['email'],kahol_lavan_list[0]['address'],'14:40')
-    #insert_parking_lot_data_to_mongodb()
-    #result = get_user_by_email_password("avi@gmail.com","12345678")
-    #print(result)
+    # users_list = get_users_list()
+    # get_user_points(users_list[0])
+    # kahol_lavan_list= get_parking_kahol_lavan_list()
+    # update_parking_release(users_list[0]['email'],kahol_lavan_list[0]['address'])
+    # users_list = get_users_list()
+    # kahol_lavan_list= get_parking_kahol_lavan_list()
+    # update_grabbing_parking(users_list[0]['email'], kahol_lavan_list[0]['address'])
+    # update_parking_release_time(users_list[0]['email'],kahol_lavan_list[0]['address'],'14:40')
+    # insert_parking_lot_data_to_mongodb()
+    # result = get_user_by_email_password("avi@gmail.com","12345678")
+    # print(result)
+
 
 if __name__ == "__main__":
     # response = get_parking_lot_location(43)

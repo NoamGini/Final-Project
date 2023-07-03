@@ -13,7 +13,7 @@ def get_gps_coordinates(hebrew_address):
 
     # Set the address and other parameters
     params = {
-        ADDRESS2: hebrew_address,
+        ADDRESS_SMALL_LETTER: hebrew_address,
         KEY: GOOGLE_MAPS_API_KEY,
         LANGUAGE: HEBREW
     }
@@ -78,7 +78,7 @@ def get_parking_lot_info(parking_name):
             PARKING_GPS_LAT: FLOATING_POINT_FORMAT % elements[1][VALUE],
             PARKING_GPS_LON: FLOATING_POINT_FORMAT % elements[2][VALUE],
             CAPACITY: elements[4][VALUE],
-            ADDRESS2: elements[6][VALUE] + COMMA + elements[5][VALUE],
+            ADDRESS_SMALL_LETTER: elements[6][VALUE] + COMMA + elements[5][VALUE],
             INFO_TO_SHOW: element_status,
             FREE_PARKING_LEFT: elements[13][VALUE]
         }

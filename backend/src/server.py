@@ -6,14 +6,13 @@ from apscheduler.triggers.interval import IntervalTrigger
 import json
 from backend.constants import *
 
-
 flag = 0
 app = Flask(__name__)
 app.config[SECRET_KEY] = SECRET
 scheduler = BackgroundScheduler()
 app.scheduler = scheduler
 
-#for real time updates
+# for real time updates
 socketio = SocketIO(app)
 
 global_parking_lots_by_address = []
@@ -54,7 +53,8 @@ def get_closest_parking_by_address_from_client(address):
 def get_closest_parking_by_distance_specified_by_client(address, distance):
     global global_parking_lots_by_address
     if distance == RESET:
-        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
+        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(
+            ENCODE_UTF8)
         return ten_parking_lots
 
     parking_filtered_by_distance = [tup for tup in global_parking_lots_by_address if tup[1] <= int(distance)]
@@ -67,7 +67,8 @@ def get_closest_parking_by_distance_specified_by_client(address, distance):
 def get_closest_parking_by_duration_specified_by_client(address, duration):
     global global_parking_lots_by_address
     if duration == RESET:
-        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
+        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(
+            ENCODE_UTF8)
         return ten_parking_lots
 
     parking_filtered_by_duration = get_closest_parking_by_duration(global_parking_lots_by_address, duration)
@@ -81,7 +82,8 @@ def get_parking_by_company(address, company):
     global flag, global_parking_lots_by_address
     response = []
     if company == RESET:
-        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
+        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(
+            ENCODE_UTF8)
         return ten_parking_lots
     if company == HAUZOT_AHOF:
         flag = 1
@@ -102,7 +104,8 @@ def get_parking_by_company(address, company):
 def get_parking_by_status(address, status):
     global global_parking_lots_by_address
     if status == RESET:
-        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
+        ten_parking_lots = json.dumps(global_parking_lots_by_address, ensure_ascii=False, default=str).encode(
+            ENCODE_UTF8)
         return ten_parking_lots
 
     parking_lots_by_status = [tup for tup in global_parking_lots_by_address if tup[0]['InformationToShow'] == status]
@@ -129,12 +132,12 @@ def register():
     request_data = request.data  # getting the response data
     request_data = json.loads(request_data.decode(DECODE_UTF8))
     email = request_data[EMAIL]
-    name = request_data[NAME2]
+    name = request_data[NAME_SMALL_LETTER]
     password = request_data[PASSWORD]
     parking = request_data[PARKING]
     points = request_data[POINTS]
     avatar = request_data[AVATAR]
-    user = {NAME2: name, EMAIL: email, PASSWORD: password, PARKING: parking, POINTS: points, AVATAR: avatar }
+    user = {NAME_SMALL_LETTER: name, EMAIL: email, PASSWORD: password, PARKING: parking, POINTS: points, AVATAR: avatar}
     # check if this user already exits
     if not user_exist_db(user):
         add_user_to_db(user)
@@ -170,18 +173,19 @@ def get_user():
 
 @app.route('/parking_kahol_lavan')
 def get_all_parking_kahol_lavan():
-    all_parking_kahol_lavan= get_all_data_from_collection_kahol_lavan()
+    all_parking_kahol_lavan = get_all_data_from_collection_kahol_lavan()
     all_parking_kahol_lavan = json.dumps(all_parking_kahol_lavan, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
     return all_parking_kahol_lavan
+
 
 @app.route('/parking_kahol_lavan/release_time', methods=['POST'])
 def update_release_time():
     request_data = request.data  # getting the response data
     request_data = json.loads(request_data.decode(DECODE_UTF8))
     email = request_data[EMAIL]
-    address = request_data[ADDRESS2]
+    address = request_data[ADDRESS_SMALL_LETTER]
     release_time = request_data[RELEASE_TIME]
-    user, parking= update_parking_release_time(email, address, release_time)
+    user, parking = update_parking_release_time(email, address, release_time)
     parking = json.dumps(parking, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
     user = json.dumps(user, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
     # Update the data
@@ -195,7 +199,7 @@ def update_grabbed_parking():
     request_data = request.data  # getting the response data
     request_data = json.loads(request_data.decode(DECODE_UTF8))
     email = request_data[EMAIL]
-    address = request_data[ADDRESS2]
+    address = request_data[ADDRESS_SMALL_LETTER]
     user, parking = update_grabbing_parking(email, address)
     user = json.dumps(user, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
     parking = json.dumps(parking, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
@@ -229,7 +233,7 @@ def update_release_parking():
     request_data = request.data  # getting the response data
     request_data = json.loads(request_data.decode(DECODE_UTF8))
     email = request_data[EMAIL]
-    address = request_data[ADDRESS2]
+    address = request_data[ADDRESS_SMALL_LETTER]
     user, parking = update_parking_release(email, address)
     parking = json.dumps(parking, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
     user = json.dumps(user, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
@@ -237,14 +241,17 @@ def update_release_parking():
     socketio.emit(RELEASE_PARKING_UPDATE, parking)
     return user
 
+
 # Define Socket.IO event handlers
 @socketio.on(CONNECT)
 def handle_connect():
     print(SOCKET_IO_CONNECTED)
 
+
 @socketio.on(DISCONNECT)
 def handle_disconnect():
     print(SOCKET_IO_DISCONNECTED)
+
 
 def update_parking_hidden(email, address):
     parking = update_parking_status_hidden(email, address)
@@ -254,7 +261,6 @@ def update_parking_hidden(email, address):
 
 
 def update_parking_lots():
-
     # Get the data from the database
     TLV_parking_list_hauzot = get_all_data_from_collection_hauzot()
     TLV_parking_list_central = get_all_data_from_collection_central()
@@ -263,20 +269,17 @@ def update_parking_lots():
     for parking in TLV_parking_list_hauzot:
         updated_parking_hauzot = update_status(parking, parking[PARKING_AHUZOT_CODE])
         parking[INFO_TO_SHOW] = updated_parking_hauzot[INFO_TO_SHOW]
-        filter_query = {NAME: parking[NAME]}
-        update_query = {'$set': {INFO_TO_SHOW: updated_parking_hauzot[INFO_TO_SHOW]}}
-        update_document(HAUZOT_AHOF_DB, filter_query, update_query)
+        update_park_lot_status(updated_parking_hauzot[INFO_TO_SHOW],
+                               parking[NAME],
+                               HAUZOT_AHOF_DB)
 
     for parking in TLV_parking_list_central:
         parking_tuple = (parking, EMPTY)
         updated_parking_central = update_parking_lot_status(parking_tuple)
         parking[INFO_TO_SHOW] = updated_parking_central[0][INFO_TO_SHOW]
-        filter_query = {NAME: updated_parking_central[0][NAME]}
-        update_query = {'$set': {INFO_TO_SHOW: updated_parking_central[0][INFO_TO_SHOW]}}
-        update_document(CENTRAL_PARK_DB, filter_query, update_query)
-
-    print(PARKING_LOTS_UPDATED)
-
+        update_park_lot_status(updated_parking_central[0][INFO_TO_SHOW],
+                                   updated_parking_central[0][NAME],
+                                   CENTRAL_PARK_DB)
 
 
 # Configure the scheduler
@@ -287,7 +290,6 @@ scheduler.add_job(
     name=UPDATE_JOB_NAME,
     replace_existing=True
 )
-
 
 if __name__ == "__main__":
     scheduler.start()

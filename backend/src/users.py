@@ -12,7 +12,7 @@ def create_users_list():
 
         user = {
             EMAIL: f'user{i + 1}@gmail.com',
-            NAME2: f'User {i + 1}',
+            NAME_SMALL_LETTER: f'User {i + 1}',
             PASSWORD: '12345678',
             PARKING: parking,
             POINTS: 5,
@@ -27,11 +27,11 @@ def create_users_list():
 def get_users_list(users_list):
     parking10 = generate_list_kahol_lavan()[9]
     parking11 = generate_list_kahol_lavan()[10]
-    user1 = {EMAIL: 'noam@gmail.com', NAME2: 'Noam', PASSWORD: '12345678', PARKING: None, POINTS: 5,
+    user1 = {EMAIL: 'noam@gmail.com', NAME_SMALL_LETTER: 'Noam', PASSWORD: '12345678', PARKING: None, POINTS: 5,
              AVATAR: None}
-    user2 = {EMAIL: 'noa@gmail.com', NAME2: 'Noa', PASSWORD: '12345678', PARKING: parking10, POINTS: 5,
+    user2 = {EMAIL: 'noa@gmail.com', NAME_SMALL_LETTER: 'Noa', PASSWORD: '12345678', PARKING: parking11, POINTS: 5,
              AVATAR: None}
-    user3 = {EMAIL: 'amit@gmail.com', NAME2: 'Amit', PASSWORD: '12345678', PARKING: parking11, POINTS: 5,
+    user3 = {EMAIL: 'amit@gmail.com', NAME_SMALL_LETTER: 'Amit', PASSWORD: '12345678', PARKING: parking10, POINTS: 5,
              AVATAR: None}
 
     users_list.append(user1)

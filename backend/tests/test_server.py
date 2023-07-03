@@ -37,22 +37,22 @@ class ServerTestCase(TestCase):
     ):
         # Mock the return values of the database functions
         mock_get_closest_parking_by_address.return_value = [
-            ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
-            ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1])]
+            ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
+            ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1])]
         mock_get_all_data_from_collection_hauzot.return_value = [
-            {NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]},
-            {NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3]}]
+            {NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]},
+            {NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3]}]
         mock_get_all_data_from_collection_central.return_value = [
-            {NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]},
-            {NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}]
+            {NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]},
+            {NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}]
         mock_get_closest_parking_by_address_hauzot.return_value = [
-            ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
-            ({NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])]
+            ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
+            ({NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])]
         mock_global_parking_lots_by_address.return_value = [
-            ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
-            ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
-            ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
-            ({NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])]
+            ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
+            ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
+            ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
+            ({NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])]
 
         # Make a request to the endpoint
         response = self.client.get('/closest_parking/141 Main St')
@@ -75,18 +75,20 @@ class ServerTestCase(TestCase):
 
     def test_get_closest_parking_by_distance_specified_by_client(self):
         mock_parking_lots = [
-            ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
-            ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
-            ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
-            ({NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])
+            ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
+            ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
+            ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
+            ({NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])
         ]
 
         with patch('backend.src.server.global_parking_lots_by_address', mock_parking_lots):
             response = self.client.get('/closest_parking/141 Main St/1700')
 
             return_list_data = [
-                ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
-                ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1])]
+                (
+                {NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
+                (
+                {NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1])]
 
             # Assert the response data
             expected_data = json.dumps(return_list_data, ensure_ascii=False, default=str).encode(ENCODE_UTF8)
@@ -96,19 +98,22 @@ class ServerTestCase(TestCase):
 
     def test_get_closest_parking_by_duration_specified_by_client(self):
         mock_parking_lots = [
-            ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
-            ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
-            ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
-            ({NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])
+            ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
+            ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
+            ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
+            ({NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3]}, TEST_DISTANCES[3], TEST_DURATION[3])
         ]
 
         with patch('backend.src.server.global_parking_lots_by_address', mock_parking_lots):
             response = self.client.get('/closest_parking_duration/141 Main St/23 mins')
 
             return_list_data = [
-                ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
-                ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
-                ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
+                (
+                {NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]}, TEST_DISTANCES[0], TEST_DURATION[0]),
+                (
+                {NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}, TEST_DISTANCES[1], TEST_DURATION[1]),
+                (
+                {NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]}, TEST_DISTANCES[2], TEST_DURATION[2]),
             ]
 
             # Assert the response data
@@ -119,13 +124,13 @@ class ServerTestCase(TestCase):
 
     def test_get_parking_by_company(self):
         mock_parking_lots = [
-            ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0], PARKING_AHUZOT_CODE: TEST_CODES[0]},
+            ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0], PARKING_AHUZOT_CODE: TEST_CODES[0]},
              TEST_DISTANCES[0], TEST_DURATION[0]),
-            ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1], PARKING_AHUZOT_CODE: TEST_CODES[1]},
+            ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1], PARKING_AHUZOT_CODE: TEST_CODES[1]},
              TEST_DISTANCES[1], TEST_DURATION[1]),
-            ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2], PARKING_CENTRAL_CODE: TEST_CODES[2]},
+            ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2], PARKING_CENTRAL_CODE: TEST_CODES[2]},
              TEST_DISTANCES[2], TEST_DURATION[2]),
-            ({NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3], PARKING_CENTRAL_CODE: TEST_CODES[3]},
+            ({NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3], PARKING_CENTRAL_CODE: TEST_CODES[3]},
              TEST_DISTANCES[3], TEST_DURATION[3])
         ]
 
@@ -133,9 +138,9 @@ class ServerTestCase(TestCase):
             response = self.client.get('/closest_parking_company/141 Main St/אחוזת החוף')
 
             return_list_data = [
-                ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0], PARKING_AHUZOT_CODE: TEST_CODES[0]},
+                ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0], PARKING_AHUZOT_CODE: TEST_CODES[0]},
                  TEST_DISTANCES[0], TEST_DURATION[0]),
-                ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1], PARKING_AHUZOT_CODE: TEST_CODES[1]},
+                ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1], PARKING_AHUZOT_CODE: TEST_CODES[1]},
                  TEST_DISTANCES[1], TEST_DURATION[1]),
             ]
 
@@ -147,13 +152,13 @@ class ServerTestCase(TestCase):
 
     def test_get_parking_by_status(self):
         mock_parking_lots = [
-            ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0], INFO_TO_SHOW: TEST_STATUSES[0]},
+            ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0], INFO_TO_SHOW: TEST_STATUSES[0]},
              TEST_DISTANCES[0], TEST_DURATION[0]),
-            ({NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1], INFO_TO_SHOW: TEST_STATUSES[2]},
+            ({NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1], INFO_TO_SHOW: TEST_STATUSES[2]},
              TEST_DISTANCES[1], TEST_DURATION[1]),
-            ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2], INFO_TO_SHOW: TEST_STATUSES[0]},
+            ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2], INFO_TO_SHOW: TEST_STATUSES[0]},
              TEST_DISTANCES[2], TEST_DURATION[2]),
-            ({NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3], INFO_TO_SHOW: TEST_STATUSES[1]},
+            ({NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3], INFO_TO_SHOW: TEST_STATUSES[1]},
              TEST_DISTANCES[3], TEST_DURATION[3])
         ]
 
@@ -163,9 +168,9 @@ class ServerTestCase(TestCase):
             response = self.client.get('/closest_parking_status/141 Main St/free')
 
             return_list_data = [
-                ({NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0], INFO_TO_SHOW: TEST_STATUSES[0]},
+                ({NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0], INFO_TO_SHOW: TEST_STATUSES[0]},
                  TEST_DISTANCES[0], TEST_DURATION[0]),
-                ({NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2], INFO_TO_SHOW: TEST_STATUSES[0]},
+                ({NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2], INFO_TO_SHOW: TEST_STATUSES[0]},
                  TEST_DISTANCES[2], TEST_DURATION[2]),
             ]
 
@@ -180,11 +185,11 @@ class ServerTestCase(TestCase):
     def test_get_parking_by_name(self, mock_get_all_data_from_collection_central,
                                  mock_get_all_data_from_collection_hauzot):
         mock_get_all_data_from_collection_hauzot.return_value = [
-            {NAME: TEST_PARKINGS[0], ADDRESS2: TEST_ADDRESSES[0]},
-            {NAME: TEST_PARKINGS[1], ADDRESS2: TEST_ADDRESSES[1]}]
+            {NAME: TEST_PARKINGS[0], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[0]},
+            {NAME: TEST_PARKINGS[1], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[1]}]
         mock_get_all_data_from_collection_central.return_value = [
-            {NAME: TEST_PARKINGS[2], ADDRESS2: TEST_ADDRESSES[2]},
-            {NAME: TEST_PARKINGS[3], ADDRESS2: TEST_ADDRESSES[3]}]
+            {NAME: TEST_PARKINGS[2], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[2]},
+            {NAME: TEST_PARKINGS[3], ADDRESS_SMALL_LETTER: TEST_ADDRESSES[3]}]
         with self.app.test_request_context('/closest_parking_by_parking_name/Parking Lot 14'):
             response = get_parking_by_name(TEST_PARKINGS[3])
 
@@ -203,7 +208,7 @@ class ServerTestCase(TestCase):
 
             # Mock request data
             request_data = {
-                NAME2: 'Test User',
+                NAME_SMALL_LETTER: 'Test User',
                 EMAIL: 'test@example.com',
                 PASSWORD: 'password',
                 PARKING: 'parking_lot',
@@ -252,7 +257,7 @@ class ServerTestCase(TestCase):
                 # Make a test request to the route
                 response = self.client.post('/parking_kahol_lavan/release_time', json={
                     EMAIL: 'test@example.com',
-                    ADDRESS2: '123 Main St',
+                    ADDRESS_SMALL_LETTER: '123 Main St',
                     RELEASE_TIME: '10:00 AM'
                 })
 
@@ -271,7 +276,7 @@ class ServerTestCase(TestCase):
             response = self.client.post('/parking_kahol_lavan/grabbing_parking',
                                         json={
                                             EMAIL: 'test@example.com',
-                                            ADDRESS2: '123 Street'
+                                            ADDRESS_SMALL_LETTER: '123 Street'
                                         })
 
         # Assert the expected behavior
@@ -301,7 +306,7 @@ class ServerTestCase(TestCase):
 
         # Make a test request to the route
         response = self.client.post('/parking_kahol_lavan/release_parking',
-                                    json={EMAIL: 'example@example.com', ADDRESS2: '123 Main St.'})
+                                    json={EMAIL: 'example@example.com', ADDRESS_SMALL_LETTER: '123 Main St.'})
 
         # Perform assertions on the response
         self.assertEqual(response.status_code, 200)

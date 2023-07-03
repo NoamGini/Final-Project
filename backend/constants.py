@@ -31,9 +31,9 @@ GET_CAR_PARK_DYNAMIC_DETAILS = 'CarParkDynamicDetails'
 GET_CAR_PARK_STATUS_RES = 'GetCarParkStatusResult'
 
 NAME = 'Name'
-NAME2 = 'name'
+NAME_SMALL_LETTER = 'name'
 ADDRESS = 'Address'
-ADDRESS2 = 'address'
+ADDRESS_SMALL_LETTER = 'address'
 PARKING_AHUZOT_CODE = 'AhuzotCode'
 PARKING_CENTRAL_CODE = 'CentralParkCode'
 PARKING_GPS_LAT = 'GPSLattitude'
@@ -53,7 +53,7 @@ USER = 'user'
 AVATAR = 'avatar'
 
 STATUS_UNAVAILABLE = '    '
-STATUSES = ('פנוי', 'מלא', 'מעט', 'תפוס', 'מתפנה בקרוב', '')
+STATUSES = ('פנוי', 'מלא', 'מעט', 'תפוס', 'מתפנה בקרוב')
 UPPER_BOUND = 0.15
 
 WALKING = 'walking'
